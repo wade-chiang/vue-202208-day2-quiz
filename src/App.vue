@@ -1,66 +1,79 @@
 
 <template>
 
-  <!-- <main>
-    <TheWelcome />
-  </main> -->
+
 
   <h1>YouBike 臺北市公共自行車即時資訊</h1>
 
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>場站名稱</th>
-        <th>場站區域</th>
-        <th>目前可用車輛
-          <i class="fa fa-sort-asc" aria-hidden="true"></i>
-          <i class="fa fa-sort-desc" aria-hidden="true"></i>
-        </th>
-        <th>總停車格
-          <i class="fa fa-sort-asc" aria-hidden="true"></i>
-          <i class="fa fa-sort-desc" aria-hidden="true"></i>
-        </th>
-        <th>資料更新時間</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="s in uBikeStops" :key="s.sno">
-        <td>{{ s.sno }}</td>
-        <td>{{ s.sna }}</td>
-        <td>{{ s.sarea }}</td>
-        <td>{{ s.sbi }}</td>
-        <td>{{ s.tot }}</td>
-        <td>{{ timeFormat(s.mday) }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <search
+    @updateSearch="updateSearch"
+  />
 
+  <!-- <UbikeTable :fetchStops="uBikeStops" /> -->
+  <ubike-table :fetchStops="filtedStops" />
 
 </template>
 
 
+<style >
 
-<style scoped>
-  
+  body {
+    padding: 1em;
+  }
+
+  ul {
+    display: block;
+    margin: 1rem auto 2rem;
+    overflow: hidden;
+  }
+
+  .pager {
+    float: left;
+    display: block;
+    height: 25px;
+    text-align: center;
+    margin-right: 5px;
+    border: 1px solid #aaa;
+  }
+
+  .pager.active a {
+    background-color: #000;
+    color: #fff !important;
+  }
+
+  .pager a {
+    padding: 5px;
+    line-height: 25px;
+    text-decoration: none;
+  }
+
 </style>
 
 
 
 <script>
-import { ref, computed, createApp } from "vue";
 
-import HelloWorld from './components/HelloWorld.vue';
-import TheWelcome from './components/TheWelcome.vue';
+// 欄位說明:
+    // sno：站點代號、 sna：場站名稱(中文)、 tot：場站總停車格、
+    // sbi：場站目前車輛數量、 sarea：場站區域(中文)、 mday：資料更新時間、
+    // lat：緯度、 lng：經度、 ar：地(中文)、 sareaen：場站區域(英文)、
+    // snaen：場站名稱(英文)、 aren：地址(英文)、 bemp：空位數量、 act：全站停用狀態
 
+
+import { ref, computed } from "vue";
+
+import UbikeTable from "./components/UbikeTable.vue";
+import Search from "./components/Search.vue";
 
 export default {
   components: {
-    TheWelcome
+    UbikeTable,
+    Search
   },
   setup() {
     const uBikeStops = ref([]);
-    const isStopsFilter = ref(false);
+    // const isStopsFilter = ref(false);
+    const stopSearch = ref("");
 
     fetch('https://tcgbusfs.blob.core.windows.net/blobyoubike/YouBikeTP.gz')
       .then(res => res.json())
@@ -69,21 +82,24 @@ export default {
         uBikeStops.value = stops;
       });
 
+
+    const updateSearch = (val) => {
+      stopSearch.value = val
+    }
+
     const filtedStops = computed(() => {
-      return isStopsFilter.value ? uBikeStops.value.filter(d => d.sbi > 0) : uBikeStops.value;
+      return stopSearch.value ? uBikeStops.value.filter(d => d.sna.includes(stopSearch.value)) : uBikeStops.value;
     });
 
-    const timeFormat = (val) => {
-      // 時間格式
-      const pattern = /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/;
-      return val.replace(pattern, '$1/$2/$3 $4:$5:$6');
-    };
+
+
 
     return {
       uBikeStops,
       filtedStops,
-      isStopsFilter,
-      timeFormat
+      // isStopsFilter,
+      // stopSearch,
+      updateSearch
     }
   }
 }
