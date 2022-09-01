@@ -5,20 +5,34 @@
         <th>#</th>
         <th>場站名稱</th>
         <th>場站區域</th>
-        <th>目前可用車輛
-          <i class="fa fa-sort-asc" aria-hidden="true"></i>
-          <i class="fa fa-sort-desc" aria-hidden="true"></i>
+
+        <th @click="setOrder('sbi', !isAsc)">
+          目前可用車輛
+
+          <template v-if=" currentSort === 'sbi' ">
+            <i v-if="isAsc" class="fa fa-sort-asc" aria-hidden="true"></i>
+            <i v-else class="fa fa-sort-desc" aria-hidden="true"></i>
+          </template>
+
         </th>
-        <th>總停車格
-          <i class="fa fa-sort-asc" aria-hidden="true"></i>
-          <i class="fa fa-sort-desc" aria-hidden="true"></i>
+
+        <th @click="setOrder('tot', !isAsc)">
+          總停車格
+          
+          <template v-if=" currentSort === 'tot' ">
+            <i v-if="isAsc" class="fa fa-sort-asc" aria-hidden="true"></i>
+            <i v-else class="fa fa-sort-desc" aria-hidden="true"></i>
+          </template>
+
         </th>
+        
         <th>資料更新時間</th>
       </tr>
     </thead>
     <tbody>
+      <!-- <tr v-for="s in stops" :key="s.sno"> -->
       <tr v-for="s in fetchStops" :key="s.sno">
-        <!-- <tr v-for="s in filtedStops" :key="s.sno"> -->
+        <!-- <tr v-for="s in sortedStops" :key="s.sno"> -->
         <td>{{ s.sno }}</td>
         <td>{{ s.sna }}</td>
         <td>{{ s.sarea }}</td>
@@ -30,12 +44,6 @@
   </table>
 </template>
 
-
-
-<style></style>
-
-
-
 <script>
 // 欄位說明:
 // sno：站點代號、 sna：場站名稱(中文)、 tot：場站總停車格、
@@ -44,15 +52,27 @@
 // snaen：場站名稱(英文)、 aren：地址(英文)、 bemp：空位數量、 act：全站停用狀態
 
 
-import { ref, computed, createApp } from "vue";
+import { ref } from "vue";
 
 export default {
   // components: {
   // },
   props: {
-    fetchStops: Array
+    fetchStops : Array
   },
-  setup() {
+  // props: ['fetchStops'],
+  setup(props, { emit }) {
+
+    const currentSort = ref("sbi")
+
+    const isAsc = ref(false)
+
+    const setOrder = (field, order) => {
+      currentSort.value = field;
+      isAsc.value = order
+      emit('updateSort', currentSort.value, isAsc.value)
+    }
+
 
     const timeFormat = (val) => {
       // 時間格式
@@ -61,8 +81,22 @@ export default {
     };
 
     return {
+      setOrder,
       timeFormat,
+      // sortedStops,
+      isAsc,
+      // stops,
+      // fetchStops,
+      currentSort
     }
   }
 }
 </script>
+
+
+
+<style>
+</style>
+
+
+

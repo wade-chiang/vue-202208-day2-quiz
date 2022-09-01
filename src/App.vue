@@ -5,12 +5,10 @@
 
   <h1>YouBike 臺北市公共自行車即時資訊</h1>
 
-  <search
-    @updateSearch="updateSearch"
-  />
+  <search @updateSearch="updateSearch" />
 
   <!-- <UbikeTable :fetchStops="uBikeStops" /> -->
-  <ubike-table :fetchStops="filtedStops" />
+  <ubike-table :fetchStops="sortedStops" @updateSort="updateSortFunc" />
 
 </template>
 
@@ -74,6 +72,9 @@ export default {
     const uBikeStops = ref([]);
     // const isStopsFilter = ref(false);
     const stopSearch = ref("");
+    const isAsc = ref();
+    const currentSort = ref();
+
 
     fetch('https://tcgbusfs.blob.core.windows.net/blobyoubike/YouBikeTP.gz')
       .then(res => res.json())
@@ -87,11 +88,29 @@ export default {
       stopSearch.value = val
     }
 
+    const updateSortFunc = (currentSortValue, isAscValue) => {
+      currentSort.value = currentSortValue
+      isAsc.value = isAscValue
+    }
+
     const filtedStops = computed(() => {
       return stopSearch.value ? uBikeStops.value.filter(d => d.sna.includes(stopSearch.value)) : uBikeStops.value;
     });
 
 
+    const sortedStops = computed(() => {
+      if (currentSort.value === '') {
+        return filtedStops.value
+      }
+      const stops = [...filtedStops.value];
+      if (isAsc.value) {
+        stops.sort((a, b) => a[currentSort.value] - b[currentSort.value]);
+      } else {
+        stops.sort((a, b) => b[currentSort.value] - a[currentSort.value]);
+      }
+
+      return stops;
+    });
 
 
     return {
@@ -99,7 +118,12 @@ export default {
       filtedStops,
       // isStopsFilter,
       // stopSearch,
-      updateSearch
+      updateSearch,
+      isAsc,
+      currentSort,
+      updateSortFunc,
+      sortedStops
+      // stops,
     }
   }
 }
