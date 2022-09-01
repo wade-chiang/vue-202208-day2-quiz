@@ -102,6 +102,7 @@ export default {
       if (currentSort.value === '') {
         return filtedStops.value
       }
+      // 因為sort過後會破壞性的改變原本的陣列，所以clone一個新的陣列stops來使用
       const stops = [...filtedStops.value];
       if (isAsc.value) {
         stops.sort((a, b) => a[currentSort.value] - b[currentSort.value]);

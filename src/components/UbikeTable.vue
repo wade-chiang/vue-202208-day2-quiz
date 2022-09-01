@@ -6,7 +6,7 @@
         <th>場站名稱</th>
         <th>場站區域</th>
 
-        <th @click="setOrder('sbi', !isAsc)">
+        <th @click="emitSetOrder('sbi', !isAsc)">
           目前可用車輛
 
           <template v-if=" currentSort === 'sbi' ">
@@ -16,16 +16,16 @@
 
         </th>
 
-        <th @click="setOrder('tot', !isAsc)">
+        <th @click="emitSetOrder('tot', !isAsc)">
           總停車格
-          
+
           <template v-if=" currentSort === 'tot' ">
             <i v-if="isAsc" class="fa fa-sort-asc" aria-hidden="true"></i>
             <i v-else class="fa fa-sort-desc" aria-hidden="true"></i>
           </template>
 
         </th>
-        
+
         <th>資料更新時間</th>
       </tr>
     </thead>
@@ -67,7 +67,7 @@ export default {
 
     const isAsc = ref(false)
 
-    const setOrder = (field, order) => {
+    const emitSetOrder = (field, order) => {
       currentSort.value = field;
       isAsc.value = order
       emit('updateSort', currentSort.value, isAsc.value)
@@ -81,7 +81,7 @@ export default {
     };
 
     return {
-      setOrder,
+      emitSetOrder,
       timeFormat,
       // sortedStops,
       isAsc,
