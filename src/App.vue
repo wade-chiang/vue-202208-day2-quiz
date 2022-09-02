@@ -151,11 +151,13 @@ export default {
     }
 
 
-
+    //////////////////// for RowPerPage.vue
     const updateCountOfPagesFunc = (val) => {
       countOfPages.value = val
     }
 
+
+    //////////////////// for ResetOrder.vue
     const updateCurrentSortFunc = (val) => {
       currentSort.value = ""
     }
