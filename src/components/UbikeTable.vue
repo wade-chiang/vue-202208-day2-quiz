@@ -1,4 +1,5 @@
 <template>
+
   <table class="table table-striped">
     <thead>
       <tr>
@@ -42,25 +43,21 @@
       </tr>
     </tbody>
   </table>
+
 </template>
 
-<script>
-// 欄位說明:
-// sno：站點代號、 sna：場站名稱(中文)、 tot：場站總停車格、
-// sbi：場站目前車輛數量、 sarea：場站區域(中文)、 mday：資料更新時間、
-// lat：緯度、 lng：經度、 ar：地(中文)、 sareaen：場站區域(英文)、
-// snaen：場站名稱(英文)、 aren：地址(英文)、 bemp：空位數量、 act：全站停用狀態
 
+
+<script>
 
 import { ref } from "vue";
 
 export default {
-  // components: {
-  // },
+
   props: {
     fetchStops : Array
   },
-  // props: ['fetchStops'],
+
   setup(props, { emit }) {
 
     const currentSort = ref("sbi")
@@ -73,7 +70,6 @@ export default {
       emit('updateSort', currentSort.value, isAsc.value)
     }
 
-
     const timeFormat = (val) => {
       // 時間格式
       const pattern = /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/;
@@ -81,22 +77,19 @@ export default {
     };
 
     return {
-      emitSetOrder,
       timeFormat,
-      // sortedStops,
       isAsc,
-      // stops,
-      // fetchStops,
-      currentSort
+      currentSort,
+      emitSetOrder
     }
   }
 }
+
 </script>
 
 
 
-<style>
-</style>
+<style></style>
 
 
 

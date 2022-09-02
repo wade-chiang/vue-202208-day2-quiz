@@ -8,7 +8,7 @@
 
 <script>
   
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 
 export default {
 
@@ -19,7 +19,6 @@ export default {
     const emitSearch = () => {
       emit('updateSearch', stopSearch.value)
     };
-
 
     return {
       stopSearch,
@@ -32,5 +31,4 @@ export default {
 
 
 
-<style>
-</style>
+<style></style>
